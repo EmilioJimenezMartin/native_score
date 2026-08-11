@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useIsClient } from "@/hooks/useIsClient";
@@ -16,6 +16,16 @@ export interface ModalProps {
 
 export function Modal({ open, onClose, children, className }: ModalProps) {
   const isClient = useIsClient();
+  // Tracks whether this modal has ever been opened, adjusted directly during
+  // render (React's sanctioned "derive state from a prop change" pattern —
+  // see react.dev/learn/you-might-not-need-an-effect) so the very first
+  // mount never plays the exit animation for a modal that was never shown.
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [hasOpened, setHasOpened] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) setHasOpened(true);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -33,8 +43,10 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
       aria-hidden={!open}
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md",
-        "transition-opacity duration-300 ease-out",
-        open ? "opacity-100" : "pointer-events-none opacity-0",
+        "transition-opacity ease-out",
+        open
+          ? "duration-300 opacity-100"
+          : "pointer-events-none duration-200 opacity-0",
       )}
       onClick={onClose}
     >
@@ -42,8 +54,9 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
         className={cn(
           "w-full max-w-sm rounded-[1.75rem] bg-gradient-to-br from-primary/60 via-primary-2/40 to-primary-3/40 p-px",
           "shadow-[0_0_70px_-12px_rgba(6,182,212,0.55)]",
-          "transition-all duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]",
-          open ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-90 opacity-0",
+          open && "animate-modal-in",
+          !open && hasOpened && "animate-modal-out",
+          !open && !hasOpened && "opacity-0",
         )}
         onClick={(event) => event.stopPropagation()}
       >

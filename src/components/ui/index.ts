@@ -28,5 +28,6 @@ export {
   AddToHomeIcon,
   CheckIcon,
   ClockIcon,
+  SearchIcon,
 } from "./icons";
 

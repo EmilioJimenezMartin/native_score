@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, FlagIcon, PlusIcon, TrophyIcon } from "@/components/ui";
+import { FlagIcon, PlusIcon, TrophyIcon } from "@/components/ui";
 
 export interface BottomActionBarProps {
   onOpenLeaderboard: () => void;
@@ -15,14 +15,14 @@ export function BottomActionBar({
 }: BottomActionBarProps) {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-surface/80 backdrop-blur-xl"
-      style={{ paddingBottom: "var(--safe-bottom)" }}
+      className="fixed inset-x-0 z-40 flex justify-center px-4"
+      style={{ bottom: "calc(var(--safe-bottom) + 1rem)" }}
     >
-      <Container className="grid grid-cols-3 items-center py-3">
+      <div className="grid w-full max-w-md grid-cols-3 items-center rounded-[2rem] border border-white/10 bg-surface/55 py-3 shadow-2xl shadow-black/40 backdrop-blur-2xl sm:max-w-2xl">
         <button
           type="button"
           onClick={onOpenLeaderboard}
-          className="flex flex-col items-center justify-self-start gap-1.5 px-4 py-1 text-sm font-medium text-muted transition-colors hover:text-foreground"
+          className="flex flex-col items-center justify-self-start gap-1.5 px-5 py-1 text-sm font-medium text-muted transition-colors hover:text-foreground"
         >
           <TrophyIcon className="size-6" />
           Clasificación
@@ -40,12 +40,12 @@ export function BottomActionBar({
         <button
           type="button"
           onClick={onOpenEndGame}
-          className="flex flex-col items-center justify-self-end gap-1.5 px-4 py-1 text-sm font-medium text-muted transition-colors hover:text-danger"
+          className="flex flex-col items-center justify-self-end gap-1.5 px-5 py-1 text-sm font-medium text-muted transition-colors hover:text-danger"
         >
           <FlagIcon className="size-6" />
           Terminar
         </button>
-      </Container>
+      </div>
     </nav>
   );
 }

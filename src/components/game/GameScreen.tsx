@@ -4,9 +4,10 @@ import { useState } from "react";
 import { ConfirmModal, Container } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { endGame, removePlayer } from "@/store/slices/gameSlice";
-import { rankPlayers, selectPlayers } from "@/features/game/selectors";
-import type { Player } from "@/features/game/types";
+import { getDisplayedPlayers, rankPlayers, selectPlayers } from "@/features/game/selectors";
+import type { Player, SortMode } from "@/features/game/types";
 import { BottomActionBar } from "./BottomActionBar";
+import { PlayerListControls } from "./PlayerListControls";
 import { PlayerScoreCard } from "./PlayerScoreCard";
 import { LeaderboardModal } from "./modals/LeaderboardModal";
 import { AddPlayerModal } from "./modals/AddPlayerModal";
@@ -23,6 +24,10 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   const players = useAppSelector(selectPlayers);
   const [openModal, setOpenModal] = useState<OpenModal>(null);
   const [pendingRemoval, setPendingRemoval] = useState<Player | null>(null);
+  const [search, setSearch] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("default");
+
+  const displayedPlayers = getDisplayedPlayers(players, search, sortMode);
 
   const handleConfirmEnd = () => {
     onGameEnd(rankPlayers(players));
@@ -47,13 +52,28 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     <>
       <main className="flex flex-1 flex-col pb-28 pt-20">
         <Container className="flex flex-col gap-4">
-          {players.map((player) => (
-            <PlayerScoreCard
-              key={player.id}
-              player={player}
-              onRequestRemove={() => setPendingRemoval(player)}
+          {players.length > 1 && (
+            <PlayerListControls
+              search={search}
+              onSearchChange={setSearch}
+              sortMode={sortMode}
+              onSortModeChange={setSortMode}
             />
-          ))}
+          )}
+
+          {displayedPlayers.length === 0 ? (
+            <p className="py-10 text-center text-muted">
+              No se encontró ningún jugador con ese nombre.
+            </p>
+          ) : (
+            displayedPlayers.map((player) => (
+              <PlayerScoreCard
+                key={player.id}
+                player={player}
+                onRequestRemove={() => setPendingRemoval(player)}
+              />
+            ))
+          )}
         </Container>
       </main>
 

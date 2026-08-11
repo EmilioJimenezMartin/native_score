@@ -22,3 +22,5 @@ export interface GameState {
 
 export const MIN_PLAYERS_TO_START = 2;
 export const SCORE_PRESETS = [-10, -5, 5, 10] as const;
+
+export type SortMode = "default" | "score-desc" | "score-asc" | "alphabetical";

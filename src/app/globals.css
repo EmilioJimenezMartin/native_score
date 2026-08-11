@@ -128,3 +128,40 @@ input[inputmode="numeric"]::-webkit-inner-spin-button {
 .animate-pop-in {
   animation: pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@keyframes modal-in {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.9);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.02);
+  }
+  80% {
+    transform: translateY(2px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+}
+
+.animate-modal-in {
+  animation: modal-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-modal-out {
+  animation: modal-out 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+}

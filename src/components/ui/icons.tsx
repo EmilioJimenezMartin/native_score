@@ -61,3 +61,10 @@ export const ClockIcon = createIcon(
     <path d="M12 7v5l3 3" />
   </>,
 );
+
+export const SearchIcon = createIcon(
+  <>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.5-3.5" />
+  </>,
+);

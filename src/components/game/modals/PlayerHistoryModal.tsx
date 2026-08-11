@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Modal, ModalHeader } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import type { Player } from "@/features/game/types";
@@ -10,6 +11,8 @@ export interface PlayerHistoryModalProps {
   player: Player | null;
 }
 
+type SortOrder = "newest" | "oldest";
+
 function formatTime(timestamp: number) {
   return new Date(timestamp).toLocaleTimeString("es-ES", {
     hour: "2-digit",
@@ -18,11 +21,43 @@ function formatTime(timestamp: number) {
 }
 
 export function PlayerHistoryModal({ open, onClose, player }: PlayerHistoryModalProps) {
-  const history = player ? [...player.history].reverse() : [];
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+
+  const history = player
+    ? sortOrder === "newest"
+      ? [...player.history].reverse()
+      : player.history
+    : [];
 
   return (
     <Modal open={open} onClose={onClose}>
       <ModalHeader title={player ? `Historial de ${player.name}` : "Historial"} onClose={onClose} />
+
+      {history.length > 0 && (
+        <div className="mb-4 flex gap-1 rounded-full bg-white/[0.04] p-1">
+          {(
+            [
+              ["newest", "Más reciente"],
+              ["oldest", "Más antiguo"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setSortOrder(value)}
+              className={cn(
+                "flex-1 rounded-full py-1.5 text-sm font-semibold transition-colors",
+                sortOrder === value
+                  ? "bg-gradient-to-r from-primary via-primary-2 to-primary-3 text-primary-foreground"
+                  : "text-muted hover:text-foreground",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {history.length === 0 ? (
         <p className="text-muted">Todavía no hay movimientos.</p>
       ) : (
