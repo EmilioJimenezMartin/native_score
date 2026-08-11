@@ -33,6 +33,9 @@ export function AddPlayerModal({ open, onClose }: AddPlayerModalProps) {
           placeholder="Nombre del jugador"
           value={name}
           onChange={(event) => setName(event.target.value)}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
         />
         <Button type="submit" fullWidth disabled={!name.trim()}>
           Añadir

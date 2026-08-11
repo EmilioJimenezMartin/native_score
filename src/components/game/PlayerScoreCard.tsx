@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui";
+import { Card, TrashIcon } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch } from "@/store/hooks";
 import { adjustScore } from "@/store/slices/gameSlice";
@@ -9,9 +9,10 @@ import { SCORE_PRESETS, type Player } from "@/features/game/types";
 
 export interface PlayerScoreCardProps {
   player: Player;
+  onRequestRemove: () => void;
 }
 
-export function PlayerScoreCard({ player }: PlayerScoreCardProps) {
+export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProps) {
   const dispatch = useAppDispatch();
   const [customAmount, setCustomAmount] = useState("");
   const customValue = Number(customAmount) || 0;
@@ -28,7 +29,16 @@ export function PlayerScoreCard({ player }: PlayerScoreCardProps) {
   };
 
   return (
-    <Card className="flex flex-col items-center gap-5 rounded-3xl border-white/10 bg-gradient-to-br from-primary/[0.09] via-white/[0.03] to-primary-2/[0.08] p-6 text-center">
+    <Card className="relative flex flex-col items-center gap-5 rounded-3xl border-white/10 bg-gradient-to-br from-primary/[0.09] via-white/[0.03] to-primary-2/[0.08] p-6 text-center">
+      <button
+        type="button"
+        onClick={onRequestRemove}
+        aria-label={`Eliminar a ${player.name} de la partida`}
+        className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-danger/15 hover:text-danger"
+      >
+        <TrashIcon className="size-4" />
+      </button>
+
       <span className="text-lg font-semibold text-foreground">
         {player.name}
       </span>

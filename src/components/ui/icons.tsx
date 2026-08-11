@@ -40,3 +40,17 @@ export const XIcon = createIcon(<path d="M18 6 6 18M6 6l12 12" />);
 export const DownloadIcon = createIcon(
   <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />,
 );
+
+// iOS Safari's share glyph: a square tray with an arrow leaving upward.
+export const ShareIcon = createIcon(
+  <path d="M12 15V3m0 0 4 4m-4-4L8 7M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />,
+);
+
+export const AddToHomeIcon = createIcon(
+  <>
+    <rect x="4" y="4" width="16" height="16" rx="4" />
+    <path d="M12 9v6M9 12h6" />
+  </>,
+);
+
+export const CheckIcon = createIcon(<path d="m5 13 4 4L19 7" />);

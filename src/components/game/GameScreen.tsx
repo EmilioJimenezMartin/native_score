@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Container } from "@/components/ui";
+import { ConfirmModal, Container } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { endGame } from "@/store/slices/gameSlice";
+import { endGame, removePlayer } from "@/store/slices/gameSlice";
 import { rankPlayers, selectPlayers } from "@/features/game/selectors";
 import type { Player } from "@/features/game/types";
 import { BottomActionBar } from "./BottomActionBar";
@@ -22,6 +22,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   const dispatch = useAppDispatch();
   const players = useAppSelector(selectPlayers);
   const [openModal, setOpenModal] = useState<OpenModal>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<Player | null>(null);
 
   const handleConfirmEnd = () => {
     onGameEnd(rankPlayers(players));
@@ -29,12 +30,29 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     setOpenModal(null);
   };
 
+  const handleConfirmRemoval = () => {
+    if (!pendingRemoval) return;
+    const willBeEmpty = players.length <= 1;
+    setPendingRemoval(null);
+    // Removing the last remaining player leaves nothing to play with, so the
+    // game ends the same way "Terminar partida" would, straight back to setup.
+    if (willBeEmpty) {
+      dispatch(endGame());
+    } else {
+      dispatch(removePlayer(pendingRemoval.id));
+    }
+  };
+
   return (
     <>
       <main className="flex flex-1 flex-col pb-28 pt-6">
         <Container className="flex flex-col gap-4">
           {players.map((player) => (
-            <PlayerScoreCard key={player.id} player={player} />
+            <PlayerScoreCard
+              key={player.id}
+              player={player}
+              onRequestRemove={() => setPendingRemoval(player)}
+            />
           ))}
         </Container>
       </main>
@@ -58,6 +76,19 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
         open={openModal === "confirmEnd"}
         onClose={() => setOpenModal(null)}
         onConfirm={handleConfirmEnd}
+      />
+
+      <ConfirmModal
+        open={pendingRemoval !== null}
+        onClose={() => setPendingRemoval(null)}
+        onConfirm={handleConfirmRemoval}
+        title="Eliminar jugador"
+        message={
+          pendingRemoval
+            ? `¿Seguro que quieres eliminar a ${pendingRemoval.name} de la partida?`
+            : ""
+        }
+        confirmLabel="Eliminar"
       />
     </>
   );

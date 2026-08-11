@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Button, DownloadIcon, Modal, ModalHeader } from "@/components/ui";
 import { useInstallability } from "@/hooks/useInstallability";
+import { IosInstallSteps } from "./IosInstallSteps";
 
 export function InstallMenuButton() {
-  const { isInstallable, isIos, dismissed, promptInstall } = useInstallability();
+  const { isInstallable, isIos, isIpad, dismissed, promptInstall } = useInstallability();
   const [open, setOpen] = useState(false);
 
   if (!isInstallable || !dismissed) return null;
@@ -28,15 +29,17 @@ export function InstallMenuButton() {
 
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalHeader title="Instala EMI Score" onClose={() => setOpen(false)} />
-        <p className="text-muted">
-          {isIos
-            ? 'Toca compartir y luego "Añadir a pantalla de inicio".'
-            : "Añádela a tu pantalla de inicio para abrirla como una app."}
-        </p>
-        {!isIos && (
-          <Button size="lg" fullWidth className="mt-5" onClick={handleInstall}>
-            Instalar
-          </Button>
+        {isIos ? (
+          <IosInstallSteps isIpad={isIpad} />
+        ) : (
+          <>
+            <p className="text-muted">
+              Añádela a tu pantalla de inicio para abrirla como una app.
+            </p>
+            <Button size="lg" fullWidth className="mt-5" onClick={handleInstall}>
+              Instalar
+            </Button>
+          </>
         )}
       </Modal>
     </>

@@ -14,5 +14,15 @@ export { Modal, ModalHeader } from "./Modal";
 export type { ModalProps, ModalHeaderProps } from "./Modal";
 export { ConfirmModal } from "./ConfirmModal";
 export type { ConfirmModalProps } from "./ConfirmModal";
-export { TrophyIcon, PlusIcon, FlagIcon, TrashIcon, XIcon, DownloadIcon } from "./icons";
+export {
+  TrophyIcon,
+  PlusIcon,
+  FlagIcon,
+  TrashIcon,
+  XIcon,
+  DownloadIcon,
+  ShareIcon,
+  AddToHomeIcon,
+  CheckIcon,
+} from "./icons";
 

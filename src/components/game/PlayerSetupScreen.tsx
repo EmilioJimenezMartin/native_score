@@ -73,6 +73,9 @@ export function PlayerSetupScreen() {
             onChange={(event) => setName(event.target.value)}
             placeholder="Nombre del jugador"
             aria-label="Nombre del jugador"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             className="h-12 flex-1 bg-transparent text-lg text-foreground placeholder:text-muted/60 focus-visible:outline-none"
           />
           <button
