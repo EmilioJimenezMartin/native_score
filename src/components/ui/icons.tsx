@@ -36,3 +36,7 @@ export const TrashIcon = createIcon(
 );
 
 export const XIcon = createIcon(<path d="M18 6 6 18M6 6l12 12" />);
+
+export const DownloadIcon = createIcon(
+  <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />,
+);

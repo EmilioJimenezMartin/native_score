@@ -10,6 +10,8 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@/components/ui";
+import { InstallBanner } from "@/components/pwa/InstallBanner";
+import { InstallMenuButton } from "@/components/pwa/InstallMenuButton";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addPlayer, removePlayer, startGame } from "@/store/slices/gameSlice";
@@ -48,13 +50,18 @@ export function PlayerSetupScreen() {
     <main className="flex flex-1 flex-col gap-8 py-10">
       <Container className="flex flex-col gap-8">
         <header className="flex flex-col gap-1.5">
-          <h1 className="bg-gradient-to-r from-primary via-primary-2 to-primary-3 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
-            EMI - Score
-          </h1>
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="bg-gradient-to-r from-primary via-primary-2 to-primary-3 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
+              EMI - Score
+            </h1>
+            <InstallMenuButton />
+          </div>
           <p className="text-muted">
             Añade a los jugadores para empezar la partida
           </p>
         </header>
+
+        <InstallBanner />
 
         <form
           onSubmit={handleAddPlayer}

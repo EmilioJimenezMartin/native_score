@@ -1,23 +1,11 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@/hooks/useIsClient";
 import { cn } from "@/lib/utils/cn";
 import { XIcon } from "./icons";
-
-function subscribeNever() {
-  return () => {};
-}
-
-/** SSR-safe "has this mounted on the client yet" flag, without an effect. */
-function useIsClient() {
-  return useSyncExternalStore(
-    subscribeNever,
-    () => true,
-    () => false,
-  );
-}
 
 export interface ModalProps {
   open: boolean;
