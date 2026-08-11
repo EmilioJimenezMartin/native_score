@@ -44,8 +44,13 @@ function HydrationGate({ children }: { children: ReactNode }) {
   const hasHydrated = useAppSelector(selectHasHydrated);
 
   if (!hasHydrated) {
+    // Opaque and full-viewport on its own terms (not just `flex-1`) since
+    // this replaces AppShell entirely for this first tick — it can't rely
+    // on AppShell's flex-col context to center it, and it deliberately
+    // covers the page's ambient gradient so the loading state reads as one
+    // plain, centered spinner instead of a stray blob of color.
     return (
-      <div className="flex flex-1 items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
         <Spinner />
       </div>
     );
