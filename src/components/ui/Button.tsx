@@ -5,19 +5,21 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
 
 const VARIANT_CLASSES = {
-  primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
+  primary:
+    "bg-gradient-to-r from-primary via-primary-2 to-primary-3 text-primary-foreground shadow-lg shadow-primary-2/40 hover:shadow-primary-2/60 hover:brightness-110",
   secondary:
-    "bg-surface-elevated text-foreground hover:bg-surface-elevated/80 border border-border",
+    "bg-white/[0.06] text-foreground hover:bg-white/[0.1] border border-white/10",
   outline:
-    "bg-transparent text-foreground border border-border hover:bg-surface",
-  ghost: "bg-transparent text-foreground hover:bg-surface",
-  danger: "bg-danger text-danger-foreground hover:bg-danger/90",
+    "bg-transparent text-foreground border border-white/15 hover:bg-white/5",
+  ghost: "bg-transparent text-foreground hover:bg-white/5",
+  danger:
+    "bg-gradient-to-r from-danger to-[#f43f5e] text-danger-foreground shadow-lg shadow-danger/30 hover:brightness-110",
 } as const;
 
 const SIZE_CLASSES = {
-  sm: "h-9 px-3 text-sm",
-  md: "h-11 px-4 text-base",
-  lg: "h-12 px-5 text-base",
+  sm: "h-10 px-3.5 text-sm",
+  md: "h-12 px-5 text-base",
+  lg: "h-14 px-6 text-base",
 } as const;
 
 export type ButtonVariant = keyof typeof VARIANT_CLASSES;
@@ -46,10 +48,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-md font-medium",
-          "transition-colors active:scale-[0.98]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold",
+          "transition-all duration-150 active:scale-[0.97]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
           VARIANT_CLASSES[variant],
           SIZE_CLASSES[size],
           fullWidth && "w-full",

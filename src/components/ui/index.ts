@@ -10,3 +10,9 @@ export { Container } from "./Container";
 export type { ContainerProps } from "./Container";
 export { Spinner } from "./Spinner";
 export type { SpinnerProps } from "./Spinner";
+export { Modal, ModalHeader } from "./Modal";
+export type { ModalProps, ModalHeaderProps } from "./Modal";
+export { ConfirmModal } from "./ConfirmModal";
+export type { ConfirmModalProps } from "./ConfirmModal";
+export { TrophyIcon, PlusIcon, FlagIcon, TrashIcon, XIcon } from "./icons";
+
