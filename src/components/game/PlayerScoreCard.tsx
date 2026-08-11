@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, TrashIcon } from "@/components/ui";
+import { Card, ClockIcon, TrashIcon } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch } from "@/store/hooks";
 import { adjustScore } from "@/store/slices/gameSlice";
 import { SCORE_PRESETS, type Player } from "@/features/game/types";
+import { PlayerHistoryModal } from "./modals/PlayerHistoryModal";
 
 export interface PlayerScoreCardProps {
   player: Player;
@@ -15,6 +16,7 @@ export interface PlayerScoreCardProps {
 export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProps) {
   const dispatch = useAppDispatch();
   const [customAmount, setCustomAmount] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
   const customValue = Number(customAmount) || 0;
 
   const applyDelta = (amount: number) => {
@@ -32,11 +34,20 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
     <Card className="relative flex flex-col items-center gap-5 rounded-3xl border-white/10 bg-gradient-to-br from-primary/[0.09] via-white/[0.03] to-primary-2/[0.08] p-6 text-center">
       <button
         type="button"
+        onClick={() => setShowHistory(true)}
+        aria-label={`Ver historial de ${player.name}`}
+        className="absolute left-3 top-3 flex size-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-primary-2 shadow-sm transition-all hover:bg-primary-2/15 active:scale-90"
+      >
+        <ClockIcon className="size-5" />
+      </button>
+
+      <button
+        type="button"
         onClick={onRequestRemove}
         aria-label={`Eliminar a ${player.name} de la partida`}
-        className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-danger/15 hover:text-danger"
+        className="absolute right-3 top-3 flex size-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-danger shadow-sm transition-all hover:bg-danger/15 active:scale-90"
       >
-        <TrashIcon className="size-4" />
+        <TrashIcon className="size-5" />
       </button>
 
       <span className="text-lg font-semibold text-foreground">
@@ -96,6 +107,12 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
           +
         </button>
       </div>
+
+      <PlayerHistoryModal
+        open={showHistory}
+        onClose={() => setShowHistory(false)}
+        player={player}
+      />
     </Card>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 import { StoreProvider } from "@/store/StoreProvider";
 import "./globals.css";
 
@@ -48,9 +49,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <ServiceWorkerRegistration />
-        <StoreProvider>
-          <AppShell>{children}</AppShell>
-        </StoreProvider>
+        <ToastProvider>
+          <StoreProvider>
+            <AppShell>{children}</AppShell>
+          </StoreProvider>
+        </ToastProvider>
       </body>
     </html>
   );

@@ -11,3 +11,8 @@ export const selectCanStartGame = (state: RootState) =>
 export function rankPlayers(players: Player[]): Player[] {
   return [...players].sort((a, b) => b.score - a.score);
 }
+
+export function isDuplicatePlayerName(players: Player[], name: string): boolean {
+  const normalized = name.trim().toLowerCase();
+  return players.some((player) => player.name.toLowerCase() === normalized);
+}

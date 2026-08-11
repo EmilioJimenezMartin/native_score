@@ -1,5 +1,6 @@
 import { AddToHomeIcon, CheckIcon, ShareIcon } from "@/components/ui";
 import type { IconProps } from "@/components/ui/icons";
+import type { IosBrowser } from "@/hooks/useInstallability";
 
 interface Step {
   icon: (props: IconProps) => React.ReactElement;
@@ -9,9 +10,15 @@ interface Step {
 
 export interface IosInstallStepsProps {
   isIpad?: boolean;
+  iosBrowser?: IosBrowser;
 }
 
-export function IosInstallSteps({ isIpad = false }: IosInstallStepsProps) {
+export function IosInstallSteps({ isIpad = false, iosBrowser = "safari" }: IosInstallStepsProps) {
+  // Safari on iPad, and Chrome on iOS regardless of device, keep Share in a
+  // top toolbar; Safari on iPhone keeps it at the bottom.
+  const shareOnTop = iosBrowser === "chrome" || isIpad;
+  const browserLabel = iosBrowser === "chrome" ? "Chrome" : "tu navegador";
+
   const steps: Step[] = [
     {
       icon: ShareIcon,
@@ -19,13 +26,16 @@ export function IosInstallSteps({ isIpad = false }: IosInstallStepsProps) {
       description: (
         <>
           Es el icono <strong className="text-foreground">▢↑</strong> (un cuadrado con
-          una flecha hacia arriba), {isIpad ? (
+          una flecha hacia arriba),{" "}
+          {shareOnTop ? (
             <>
-              arriba del todo, junto a la <strong className="text-foreground">barra de direcciones</strong>.
+              arriba del todo, junto a la barra de direcciones de{" "}
+              <strong className="text-foreground">{browserLabel}</strong>.
             </>
           ) : (
             <>
-              abajo del todo, en el centro de la <strong className="text-foreground">barra de Safari</strong>.
+              abajo del todo, en el centro de la barra de{" "}
+              <strong className="text-foreground">{browserLabel}</strong>.
             </>
           )}
         </>
@@ -34,12 +44,19 @@ export function IosInstallSteps({ isIpad = false }: IosInstallStepsProps) {
     {
       icon: AddToHomeIcon,
       title: 'Busca "Añadir a pantalla de inicio"',
-      description: (
-        <>
-          Desliza hacia abajo por la lista de opciones que aparece hasta ver{" "}
-          <strong className="text-foreground">&ldquo;Añadir a pantalla de inicio&rdquo;</strong> y tócala.
-        </>
-      ),
+      description:
+        iosBrowser === "chrome" ? (
+          <>
+            En Chrome suele estar oculta: toca{" "}
+            <strong className="text-foreground">&ldquo;Más&rdquo;</strong> primero y luego busca{" "}
+            <strong className="text-foreground">&ldquo;Añadir a pantalla de inicio&rdquo;</strong>.
+          </>
+        ) : (
+          <>
+            Desliza hacia abajo por la lista de opciones que aparece hasta ver{" "}
+            <strong className="text-foreground">&ldquo;Añadir a pantalla de inicio&rdquo;</strong> y tócala.
+          </>
+        ),
     },
     {
       icon: CheckIcon,

@@ -1,7 +1,15 @@
+export interface ScoreEntry {
+  id: string;
+  amount: number;
+  total: number;
+  timestamp: number;
+}
+
 export interface Player {
   id: string;
   name: string;
   score: number;
+  history: ScoreEntry[];
 }
 
 export type GameStatus = "setup" | "playing";

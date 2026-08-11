@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Button, Input, Modal, ModalHeader } from "@/components/ui";
-import { useAppDispatch } from "@/store/hooks";
+import { Button, Input, Modal, ModalHeader, useToast } from "@/components/ui";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addPlayer } from "@/store/slices/gameSlice";
+import { isDuplicatePlayerName, selectPlayers } from "@/features/game/selectors";
 
 export interface AddPlayerModalProps {
   open: boolean;
@@ -13,12 +14,18 @@ export interface AddPlayerModalProps {
 
 export function AddPlayerModal({ open, onClose }: AddPlayerModalProps) {
   const dispatch = useAppDispatch();
+  const { showToast } = useToast();
+  const players = useAppSelector(selectPlayers);
   const [name, setName] = useState("");
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) return;
+    if (isDuplicatePlayerName(players, trimmed)) {
+      showToast(`Ya hay un jugador llamado "${trimmed}"`);
+      return;
+    }
     dispatch(addPlayer(trimmed));
     setName("");
     onClose();

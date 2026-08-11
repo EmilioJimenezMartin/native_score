@@ -33,7 +33,7 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
       aria-hidden={!open}
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md",
-        "transition-opacity duration-200",
+        "transition-opacity duration-300 ease-out",
         open ? "opacity-100" : "pointer-events-none opacity-0",
       )}
       onClick={onClose}
@@ -42,8 +42,8 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
         className={cn(
           "w-full max-w-sm rounded-[1.75rem] bg-gradient-to-br from-primary/60 via-primary-2/40 to-primary-3/40 p-px",
           "shadow-[0_0_70px_-12px_rgba(6,182,212,0.55)]",
-          "transition-all duration-200",
-          open ? "scale-100 opacity-100" : "scale-90 opacity-0",
+          "transition-all duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]",
+          open ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-90 opacity-0",
         )}
         onClick={(event) => event.stopPropagation()}
       >

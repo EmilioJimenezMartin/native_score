@@ -3,14 +3,23 @@
 import { useState } from "react";
 import { Button, Card, Modal, ModalHeader, XIcon } from "@/components/ui";
 import { useInstallability } from "@/hooks/useInstallability";
-import { IosInstallSteps } from "./IosInstallSteps";
+import { InstallInstructions } from "./InstallInstructions";
 
 export function InstallBanner() {
-  const { isInstallable, isIos, isIpad, dismissed, setDismissed, promptInstall } =
-    useInstallability();
+  const {
+    isInstallable,
+    installMethod,
+    isIpad,
+    iosBrowser,
+    dismissed,
+    setDismissed,
+    promptInstall,
+  } = useInstallability();
   const [showInstructions, setShowInstructions] = useState(false);
 
   if (!isInstallable || dismissed) return null;
+
+  const isNative = installMethod === "native";
 
   return (
     <>
@@ -18,14 +27,14 @@ export function InstallBanner() {
         <div className="flex-1">
           <p className="text-sm font-semibold text-foreground">Instala EMI Score</p>
           <p className="text-sm text-muted">
-            {isIos
-              ? "Añádela a tu pantalla de inicio en unos pasos."
+            {installMethod === "unsupported"
+              ? "Consulta cómo instalarla en este navegador."
               : "Añádela a tu pantalla de inicio para abrirla como una app."}
           </p>
         </div>
 
-        <Button size="sm" onClick={isIos ? () => setShowInstructions(true) : promptInstall}>
-          {isIos ? "Ver instrucciones" : "Instalar"}
+        <Button size="sm" onClick={isNative ? promptInstall : () => setShowInstructions(true)}>
+          {isNative ? "Instalar" : "Ver instrucciones"}
         </Button>
 
         <button
@@ -38,10 +47,10 @@ export function InstallBanner() {
         </button>
       </Card>
 
-      {isIos && (
+      {!isNative && (
         <Modal open={showInstructions} onClose={() => setShowInstructions(false)}>
           <ModalHeader title="Instala EMI Score" onClose={() => setShowInstructions(false)} />
-          <IosInstallSteps isIpad={isIpad} />
+          <InstallInstructions installMethod={installMethod} isIpad={isIpad} iosBrowser={iosBrowser} />
         </Modal>
       )}
     </>

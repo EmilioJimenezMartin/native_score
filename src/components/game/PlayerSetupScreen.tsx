@@ -9,13 +9,17 @@ import {
   Container,
   PlusIcon,
   TrashIcon,
+  useToast,
 } from "@/components/ui";
 import { InstallBanner } from "@/components/pwa/InstallBanner";
-import { InstallMenuButton } from "@/components/pwa/InstallMenuButton";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addPlayer, removePlayer, startGame } from "@/store/slices/gameSlice";
-import { selectCanStartGame, selectPlayers } from "@/features/game/selectors";
+import {
+  isDuplicatePlayerName,
+  selectCanStartGame,
+  selectPlayers,
+} from "@/features/game/selectors";
 import { MIN_PLAYERS_TO_START, type Player } from "@/features/game/types";
 
 const AVATAR_GRADIENTS = [
@@ -27,6 +31,7 @@ const AVATAR_GRADIENTS = [
 
 export function PlayerSetupScreen() {
   const dispatch = useAppDispatch();
+  const { showToast } = useToast();
   const players = useAppSelector(selectPlayers);
   const canStart = useAppSelector(selectCanStartGame);
   const [name, setName] = useState("");
@@ -36,6 +41,10 @@ export function PlayerSetupScreen() {
     event.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) return;
+    if (isDuplicatePlayerName(players, trimmed)) {
+      showToast(`Ya hay un jugador llamado "${trimmed}"`);
+      return;
+    }
     dispatch(addPlayer(trimmed));
     setName("");
   };
@@ -50,12 +59,9 @@ export function PlayerSetupScreen() {
     <main className="flex flex-1 flex-col gap-8 py-10">
       <Container className="flex flex-col gap-8">
         <header className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="bg-gradient-to-r from-primary via-primary-2 to-primary-3 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
-              EMI - Score
-            </h1>
-            <InstallMenuButton />
-          </div>
+          <h1 className="bg-gradient-to-r from-primary via-primary-2 to-primary-3 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
+            EMI - Score
+          </h1>
           <p className="text-muted">
             Añade a los jugadores para empezar la partida
           </p>

@@ -71,6 +71,16 @@ body {
   color: var(--foreground);
 }
 
+/* Buttons default to a text cursor in some browsers unless told otherwise;
+   every CTA in the app should read as clickable. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 /* Restrict number-only inputs to the browser's numeric keypad without the
    native spinner UI (we render our own +/- controls). */
 input[inputmode="numeric"]::-webkit-outer-spin-button,

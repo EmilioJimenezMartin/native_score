@@ -45,7 +45,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
   return (
     <>
-      <main className="flex flex-1 flex-col pb-28 pt-6">
+      <main className="flex flex-1 flex-col pb-28 pt-20">
         <Container className="flex flex-col gap-4">
           {players.map((player) => (
             <PlayerScoreCard
