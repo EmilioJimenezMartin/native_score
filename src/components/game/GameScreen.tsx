@@ -73,19 +73,14 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
         </Container>
 
         {players.length > 1 && (
-          <div
-            className="sticky z-30 bg-background/85 py-3 backdrop-blur-xl"
-            style={{ top: "calc(var(--safe-top) + 0.5rem)" }}
-          >
-            <Container>
-              <PlayerListControls
-                search={search}
-                onSearchChange={setSearch}
-                sortMode={sortMode}
-                onSortModeChange={setSortMode}
-              />
-            </Container>
-          </div>
+          <Container className="pb-3">
+            <PlayerListControls
+              search={search}
+              onSearchChange={setSearch}
+              sortMode={sortMode}
+              onSortModeChange={setSortMode}
+            />
+          </Container>
         )}
 
         <Container className="flex flex-col gap-4 pt-6">
