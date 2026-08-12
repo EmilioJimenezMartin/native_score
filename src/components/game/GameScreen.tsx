@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ConfirmModal, Container } from "@/components/ui";
+import { ConfirmModal, Container, useToast } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { endGame, removePlayer } from "@/store/slices/gameSlice";
-import { getDisplayedPlayers, rankPlayers, selectPlayers } from "@/features/game/selectors";
+import {
+  getDisplayedPlayers,
+  rankPlayers,
+  selectGameStartedAt,
+  selectPlayers,
+} from "@/features/game/selectors";
 import type { Player, SortMode } from "@/features/game/types";
+import { formatGameStartLabel } from "@/lib/utils/date";
 import { BottomActionBar } from "./BottomActionBar";
 import { PlayerListControls } from "./PlayerListControls";
 import { PlayerScoreCard } from "./PlayerScoreCard";
@@ -21,7 +27,9 @@ export interface GameScreenProps {
 
 export function GameScreen({ onGameEnd }: GameScreenProps) {
   const dispatch = useAppDispatch();
+  const { showToast } = useToast();
   const players = useAppSelector(selectPlayers);
+  const startedAt = useAppSelector(selectGameStartedAt);
   const [openModal, setOpenModal] = useState<OpenModal>(null);
   const [pendingRemoval, setPendingRemoval] = useState<Player | null>(null);
   const [search, setSearch] = useState("");
@@ -38,6 +46,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   const handleConfirmRemoval = () => {
     if (!pendingRemoval) return;
     const willBeEmpty = players.length <= 1;
+    const removedName = pendingRemoval.name;
     setPendingRemoval(null);
     // Removing the last remaining player leaves nothing to play with, so the
     // game ends the same way "Terminar partida" would, straight back to setup.
@@ -46,21 +55,40 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     } else {
       dispatch(removePlayer(pendingRemoval.id));
     }
+    showToast(`${removedName} eliminado`, "success");
   };
 
   return (
     <>
-      <main className="flex flex-1 flex-col pb-28 pt-20">
-        <Container className="flex flex-col gap-4">
-          {players.length > 1 && (
-            <PlayerListControls
-              search={search}
-              onSearchChange={setSearch}
-              sortMode={sortMode}
-              onSortModeChange={setSortMode}
-            />
+      <main
+        className="flex flex-1 flex-col pt-20"
+        style={{ paddingBottom: "calc(var(--safe-bottom) + 9rem)" }}
+      >
+        <Container className="pb-2">
+          {startedAt && (
+            <p className="text-sm font-semibold text-muted">
+              {formatGameStartLabel(startedAt)}
+            </p>
           )}
+        </Container>
 
+        {players.length > 1 && (
+          <div
+            className="sticky z-30 bg-background/85 py-3 backdrop-blur-xl"
+            style={{ top: "calc(var(--safe-top) + 4.5rem)" }}
+          >
+            <Container>
+              <PlayerListControls
+                search={search}
+                onSearchChange={setSearch}
+                sortMode={sortMode}
+                onSortModeChange={setSortMode}
+              />
+            </Container>
+          </div>
+        )}
+
+        <Container className="flex flex-col gap-4 pt-6">
           {displayedPlayers.length === 0 ? (
             <p className="py-10 text-center text-muted">
               No se encontró ningún jugador con ese nombre.

@@ -8,6 +8,7 @@ const initialState: GameState = {
   status: "setup",
   players: [],
   hasHydrated: false,
+  startedAt: null,
 };
 
 const gameSlice = createSlice({
@@ -19,11 +20,13 @@ const gameSlice = createSlice({
       return {
         ...payload,
         // Defends against state persisted by an older build that didn't
-        // track per-player history yet.
+        // track per-player history/strikes, or the game start time, yet.
         players: payload.players.map((player) => ({
           ...player,
           history: player.history ?? [],
+          strikes: player.strikes ?? 0,
         })),
+        startedAt: payload.startedAt ?? null,
         hasHydrated: true,
       };
     },
@@ -32,14 +35,27 @@ const gameSlice = createSlice({
         state.players.push(action.payload);
       },
       prepare: (name: string) => ({
-        payload: { id: nanoid(), name: name.trim(), score: 0, history: [] } satisfies Player,
+        payload: {
+          id: nanoid(),
+          name: name.trim(),
+          score: 0,
+          history: [],
+          strikes: 0,
+        } satisfies Player,
       }),
     },
     removePlayer: (state, action: PayloadAction<string>) => {
       state.players = state.players.filter((player) => player.id !== action.payload);
     },
+    renamePlayer: (state, action: PayloadAction<{ id: string; name: string }>) => {
+      const player = state.players.find((p) => p.id === action.payload.id);
+      if (player) player.name = action.payload.name.trim();
+    },
     startGame: (state) => {
-      if (state.players.length >= 2) state.status = "playing";
+      if (state.players.length >= 2) {
+        state.status = "playing";
+        state.startedAt = Date.now();
+      }
     },
     adjustScore: {
       reducer: (
@@ -64,6 +80,10 @@ const gameSlice = createSlice({
         payload: { ...payload, entryId: nanoid(), timestamp: Date.now() },
       }),
     },
+    adjustStrikes: (state, action: PayloadAction<{ id: string; amount: number }>) => {
+      const player = state.players.find((p) => p.id === action.payload.id);
+      if (player) player.strikes = Math.max(0, player.strikes + action.payload.amount);
+    },
     endGame: () => ({ ...initialState, hasHydrated: true }),
   },
 });
@@ -72,8 +92,10 @@ export const {
   hydrate,
   addPlayer,
   removePlayer,
+  renamePlayer,
   startGame,
   adjustScore,
+  adjustStrikes,
   endGame,
 } = gameSlice.actions;
 

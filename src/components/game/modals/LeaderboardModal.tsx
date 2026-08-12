@@ -18,7 +18,7 @@ export function LeaderboardModal({ open, onClose, players }: LeaderboardModalPro
       {players.length === 0 ? (
         <p className="text-muted">Todavía no hay puntuaciones.</p>
       ) : (
-        <ol className="flex flex-col gap-2">
+        <ol className="flex max-h-[50vh] flex-col gap-2 overflow-y-auto">
           {players.map((player, index) => (
             <li
               key={player.id}

@@ -132,14 +132,17 @@ input[inputmode="numeric"]::-webkit-inner-spin-button {
 @keyframes modal-in {
   0% {
     opacity: 0;
-    transform: translateY(28px) scale(0.9);
+    transform: translateY(32px) scale(0.88);
   }
-  55% {
+  45% {
     opacity: 1;
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-10px) scale(1.045);
   }
-  80% {
-    transform: translateY(2px) scale(0.995);
+  65% {
+    transform: translateY(4px) scale(0.985);
+  }
+  82% {
+    transform: translateY(-2px) scale(1.008);
   }
   100% {
     opacity: 1;
@@ -159,7 +162,7 @@ input[inputmode="numeric"]::-webkit-inner-spin-button {
 }
 
 .animate-modal-in {
-  animation: modal-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: modal-in 0.68s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-modal-out {

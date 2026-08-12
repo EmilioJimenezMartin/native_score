@@ -29,5 +29,7 @@ export {
   CheckIcon,
   ClockIcon,
   SearchIcon,
+  PencilIcon,
+  UsersIcon,
 } from "./icons";
 

@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Card, ClockIcon, TrashIcon } from "@/components/ui";
+import { Card, ClockIcon, PencilIcon, TrashIcon, XIcon } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch } from "@/store/hooks";
-import { adjustScore } from "@/store/slices/gameSlice";
+import { adjustScore, adjustStrikes } from "@/store/slices/gameSlice";
 import { SCORE_PRESETS, type Player } from "@/features/game/types";
+import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { PlayerHistoryModal } from "./modals/PlayerHistoryModal";
+import { EditPlayerNameModal } from "./modals/EditPlayerNameModal";
+
+const MAX_VISIBLE_STRIKES = 5;
 
 export interface PlayerScoreCardProps {
   player: Player;
@@ -17,7 +21,9 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
   const dispatch = useAppDispatch();
   const [customAmount, setCustomAmount] = useState("");
   const [showHistory, setShowHistory] = useState(false);
+  const [showEditName, setShowEditName] = useState(false);
   const customValue = Number(customAmount) || 0;
+  const animatedScore = useAnimatedNumber(player.score);
 
   const applyDelta = (amount: number) => {
     if (amount === 0) return;
@@ -28,6 +34,10 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
     if (!customValue) return;
     dispatch(adjustScore({ id: player.id, amount: sign * customValue }));
     setCustomAmount("");
+  };
+
+  const applyStrikeDelta = (amount: number) => {
+    dispatch(adjustStrikes({ id: player.id, amount }));
   };
 
   return (
@@ -50,12 +60,18 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
         <TrashIcon className="size-5" />
       </button>
 
-      <span className="text-lg font-semibold text-foreground">
+      <button
+        type="button"
+        onClick={() => setShowEditName(true)}
+        aria-label={`Editar nombre de ${player.name}`}
+        className="flex items-center gap-1.5 rounded-full px-2 py-1 text-lg font-semibold text-foreground transition-colors hover:bg-white/10"
+      >
         {player.name}
-      </span>
+        <PencilIcon className="size-3.5 text-muted" />
+      </button>
 
       <span className="bg-gradient-to-br from-primary via-primary-2 to-primary-3 bg-clip-text text-7xl font-extrabold tabular-nums leading-none text-transparent">
-        {player.score}
+        {animatedScore}
       </span>
 
       <div className="grid w-full grid-cols-4 gap-2">
@@ -108,9 +124,58 @@ export function PlayerScoreCard({ player, onRequestRemove }: PlayerScoreCardProp
         </button>
       </div>
 
+      <div className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-muted">Strikes</span>
+          <div className="flex items-center gap-0.5">
+            {player.strikes === 0 ? (
+              <span className="text-sm text-muted/60">0</span>
+            ) : (
+              <>
+                {Array.from({ length: Math.min(player.strikes, MAX_VISIBLE_STRIKES) }).map(
+                  (_, index) => (
+                    <XIcon key={index} className="size-3.5 text-danger" />
+                  ),
+                )}
+                {player.strikes > MAX_VISIBLE_STRIKES && (
+                  <span className="ml-0.5 text-xs font-semibold text-danger">
+                    +{player.strikes - MAX_VISIBLE_STRIKES}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => applyStrikeDelta(-1)}
+            disabled={player.strikes === 0}
+            aria-label={`Quitar strike a ${player.name}`}
+            className="flex size-8 items-center justify-center rounded-full bg-white/[0.06] text-base font-semibold text-foreground transition-all active:scale-90 disabled:opacity-30"
+          >
+            −
+          </button>
+          <button
+            type="button"
+            onClick={() => applyStrikeDelta(1)}
+            aria-label={`Añadir strike a ${player.name}`}
+            className="flex size-8 items-center justify-center rounded-full bg-danger/20 text-base font-semibold text-danger transition-all active:scale-90 hover:bg-danger/30"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
       <PlayerHistoryModal
         open={showHistory}
         onClose={() => setShowHistory(false)}
+        player={player}
+      />
+      <EditPlayerNameModal
+        open={showEditName}
+        onClose={() => setShowEditName(false)}
         player={player}
       />
     </Card>

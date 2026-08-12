@@ -7,11 +7,14 @@ import {
   Card,
   ConfirmModal,
   Container,
+  PencilIcon,
   PlusIcon,
   TrashIcon,
+  UsersIcon,
   useToast,
 } from "@/components/ui";
 import { InstallBanner } from "@/components/pwa/InstallBanner";
+import { EditPlayerNameModal } from "./modals/EditPlayerNameModal";
 import { cn } from "@/lib/utils/cn";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addPlayer, removePlayer, startGame } from "@/store/slices/gameSlice";
@@ -36,6 +39,7 @@ export function PlayerSetupScreen() {
   const canStart = useAppSelector(selectCanStartGame);
   const [name, setName] = useState("");
   const [pendingRemoval, setPendingRemoval] = useState<Player | null>(null);
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
 
   const handleAddPlayer = (event: FormEvent) => {
     event.preventDefault();
@@ -46,17 +50,22 @@ export function PlayerSetupScreen() {
       return;
     }
     dispatch(addPlayer(trimmed));
+    showToast(`${trimmed} añadido`, "success");
     setName("");
   };
 
   const handleConfirmRemoval = () => {
     if (!pendingRemoval) return;
     dispatch(removePlayer(pendingRemoval.id));
+    showToast(`${pendingRemoval.name} eliminado`, "success");
     setPendingRemoval(null);
   };
 
   return (
-    <main className="flex flex-1 flex-col gap-8 py-10">
+    <main
+      className="flex flex-1 flex-col gap-8 py-10"
+      style={{ paddingBottom: "calc(var(--safe-bottom) + 7rem)" }}
+    >
       <Container className="flex flex-col gap-8">
         <header className="flex flex-col gap-1.5">
           <h1 className="bg-gradient-to-r from-primary via-primary-2 to-primary-3 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
@@ -94,7 +103,14 @@ export function PlayerSetupScreen() {
           </button>
         </form>
 
-        {players.length > 0 && (
+        {players.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 py-10 text-center">
+            <span className="flex size-16 items-center justify-center rounded-full bg-white/[0.05] text-muted">
+              <UsersIcon className="size-8" />
+            </span>
+            <p className="text-muted">Aún no has añadido jugadores.</p>
+          </div>
+        ) : (
           <ul className="flex flex-col gap-3">
             {players.map((player, index) => (
               <li key={player.id}>
@@ -112,6 +128,14 @@ export function PlayerSetupScreen() {
                   </span>
                   <button
                     type="button"
+                    onClick={() => setEditingPlayer(player)}
+                    aria-label={`Editar nombre de ${player.name}`}
+                    className="flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-white/10 hover:text-foreground"
+                  >
+                    <PencilIcon className="size-4" />
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setPendingRemoval(player)}
                     aria-label={`Eliminar a ${player.name}`}
                     className="flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-danger/15 hover:text-danger"
@@ -125,18 +149,24 @@ export function PlayerSetupScreen() {
         )}
       </Container>
 
-      <Container className="mt-auto">
-        <Button
-          size="lg"
-          fullWidth
-          disabled={!canStart}
-          onClick={() => dispatch(startGame())}
-        >
-          {canStart
-            ? "Empezar partida"
-            : `Añade al menos ${MIN_PLAYERS_TO_START} jugadores`}
-        </Button>
-      </Container>
+      <div
+        className="fixed inset-x-0 z-40 flex justify-center px-4"
+        style={{ bottom: "calc(var(--safe-bottom) + 1rem)" }}
+      >
+        <div className="w-full max-w-md sm:max-w-2xl">
+          <Button
+            size="lg"
+            fullWidth
+            disabled={!canStart}
+            onClick={() => dispatch(startGame())}
+            className="shadow-2xl shadow-black/50"
+          >
+            {canStart
+              ? "Empezar partida"
+              : `Añade al menos ${MIN_PLAYERS_TO_START} jugadores`}
+          </Button>
+        </div>
+      </div>
 
       <ConfirmModal
         open={pendingRemoval !== null}
@@ -149,6 +179,12 @@ export function PlayerSetupScreen() {
             : ""
         }
         confirmLabel="Eliminar"
+      />
+
+      <EditPlayerNameModal
+        open={editingPlayer !== null}
+        onClose={() => setEditingPlayer(null)}
+        player={editingPlayer}
       />
     </main>
   );

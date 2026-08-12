@@ -40,7 +40,7 @@ export function FinalResultsModal({
         <p className="text-muted">Clasificación final</p>
       </div>
 
-      <ol className="mt-4 flex flex-col gap-2">
+      <ol className="mt-4 flex max-h-[45vh] flex-col gap-2 overflow-y-auto">
         {standings.map((player, index) => (
           <li
             key={player.id}

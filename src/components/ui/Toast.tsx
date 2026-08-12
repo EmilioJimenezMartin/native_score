@@ -30,7 +30,7 @@ export function Toast({ message, variant = "error", leaving = false, onClose }: 
         visible ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-95 opacity-0",
         variant === "error"
           ? "bg-gradient-to-r from-danger via-[#f43f5e] to-danger shadow-danger/40"
-          : "bg-gradient-to-r from-primary via-primary-2 to-primary-3 shadow-primary-2/40",
+          : "bg-gradient-to-r from-success via-emerald-400 to-success shadow-success/40",
       )}
     >
       <p className="flex-1 text-base font-semibold text-white">{message}</p>

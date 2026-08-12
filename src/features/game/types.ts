@@ -10,6 +10,7 @@ export interface Player {
   name: string;
   score: number;
   history: ScoreEntry[];
+  strikes: number;
 }
 
 export type GameStatus = "setup" | "playing";
@@ -18,6 +19,7 @@ export interface GameState {
   status: GameStatus;
   players: Player[];
   hasHydrated: boolean;
+  startedAt: number | null;
 }
 
 export const MIN_PLAYERS_TO_START = 2;

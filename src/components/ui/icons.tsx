@@ -68,3 +68,16 @@ export const SearchIcon = createIcon(
     <path d="m20 20-3.5-3.5" />
   </>,
 );
+
+export const PencilIcon = createIcon(
+  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />,
+);
+
+export const UsersIcon = createIcon(
+  <>
+    <circle cx="9" cy="8" r="3.5" />
+    <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+    <path d="M16 4.5a3.5 3.5 0 0 1 0 7" />
+    <path d="M15.5 13.2a6.5 6.5 0 0 1 6 6.8" />
+  </>,
+);

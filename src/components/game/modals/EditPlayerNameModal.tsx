@@ -4,37 +4,47 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Button, Input, Modal, ModalHeader, useToast } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addPlayer } from "@/store/slices/gameSlice";
+import { renamePlayer } from "@/store/slices/gameSlice";
 import { isDuplicatePlayerName, selectPlayers } from "@/features/game/selectors";
+import type { Player } from "@/features/game/types";
 
-export interface AddPlayerModalProps {
+export interface EditPlayerNameModalProps {
   open: boolean;
   onClose: () => void;
+  player: Player | null;
 }
 
-export function AddPlayerModal({ open, onClose }: AddPlayerModalProps) {
+export function EditPlayerNameModal({ open, onClose, player }: EditPlayerNameModalProps) {
   const dispatch = useAppDispatch();
   const { showToast } = useToast();
   const players = useAppSelector(selectPlayers);
-  const [name, setName] = useState("");
+
+  // Re-seeds the input with the current player's name each time the modal
+  // opens, adjusted during render (see Modal.tsx) rather than in an effect.
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [name, setName] = useState(player?.name ?? "");
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open && player) setName(player.name);
+  }
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    if (!player) return;
     const trimmed = name.trim();
     if (!trimmed) return;
-    if (isDuplicatePlayerName(players, trimmed)) {
+    if (isDuplicatePlayerName(players, trimmed, player.id)) {
       showToast(`Ya hay un jugador llamado "${trimmed}"`);
       return;
     }
-    dispatch(addPlayer(trimmed));
-    showToast(`${trimmed} añadido`, "success");
-    setName("");
+    dispatch(renamePlayer({ id: player.id, name: trimmed }));
+    showToast(`Nombre actualizado a "${trimmed}"`, "success");
     onClose();
   };
 
   return (
     <Modal open={open} onClose={onClose}>
-      <ModalHeader title="Añadir jugador" onClose={onClose} />
+      <ModalHeader title="Editar nombre" onClose={onClose} />
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           label="Nombre"
@@ -44,9 +54,10 @@ export function AddPlayerModal({ open, onClose }: AddPlayerModalProps) {
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
+          autoFocus
         />
         <Button type="submit" fullWidth disabled={!name.trim()}>
-          Añadir
+          Guardar
         </Button>
       </form>
     </Modal>

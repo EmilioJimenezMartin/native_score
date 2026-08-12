@@ -77,7 +77,7 @@ export function PlayerHistoryModal({ open, onClose, player }: PlayerHistoryModal
               </span>
               <span className="text-sm text-muted">{formatTime(entry.timestamp)}</span>
               <span className="text-sm font-semibold tabular-nums text-foreground">
-                → {entry.total}
+                {entry.total}
               </span>
             </li>
           ))}
