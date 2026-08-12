@@ -75,7 +75,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
         {players.length > 1 && (
           <div
             className="sticky z-30 bg-background/85 py-3 backdrop-blur-xl"
-            style={{ top: "calc(var(--safe-top) + 4.5rem)" }}
+            style={{ top: "calc(var(--safe-top) + 0.5rem)" }}
           >
             <Container>
               <PlayerListControls

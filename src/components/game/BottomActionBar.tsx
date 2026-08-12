@@ -16,7 +16,7 @@ export function BottomActionBar({
   return (
     <nav
       className="fixed inset-x-0 z-40 flex justify-center px-4"
-      style={{ bottom: "calc(var(--safe-bottom) + 1rem)" }}
+      style={{ bottom: "calc(var(--safe-bottom) + 0.375rem)" }}
     >
       <div className="grid w-full max-w-md grid-cols-3 items-center rounded-[2rem] border border-white/10 bg-surface/55 py-3 shadow-2xl shadow-black/40 backdrop-blur-2xl sm:max-w-2xl">
         <button

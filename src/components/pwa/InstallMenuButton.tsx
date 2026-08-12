@@ -24,7 +24,7 @@ export function InstallMenuButton() {
         onClick={() => setOpen(true)}
         aria-label="Instalar aplicación"
         style={{ top: "calc(var(--safe-top) + 1rem)" }}
-        className="fixed right-4 z-30 flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-surface-elevated/90 text-foreground shadow-lg shadow-black/30 backdrop-blur-xl transition-colors hover:bg-white/10"
+        className="fixed right-4 z-40 flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-surface-elevated/90 text-foreground shadow-lg shadow-black/30 backdrop-blur-xl transition-colors hover:bg-white/10"
       >
         <DownloadIcon className="size-5" />
       </button>
